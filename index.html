@@ -327,7 +327,20 @@
         let modo = 0;
         let numMascotaEditando = null;
         let contadorId = 1; 
-        
+
+        window.onload = function () {
+        const datosGuardados = localStorage.getItem('citasVeterinaria');
+        if (datosGuardados) {
+            datosMascota = JSON.parse(datosGuardados);
+            contadorId = Math.max(...datosMascota.map(c => c.id), 0) + 1;
+            pintarMascota();
+        }
+        };
+
+        function guardarEnLocalStorage() {
+            localStorage.setItem('citasVeterinaria', JSON.stringify(datosMascota));
+        }
+            
        
         function guardarMascota() {
             const nombreMascota = document.getElementById("Mascota").value.trim();
@@ -390,6 +403,7 @@
             datosMascota.sort((a, b) => a.id - b.id);
             showAlert("Registro Exitoso", "¡La Cita se agendó correctamente!");
             limpiar();
+            guardarEnLocalStorage();
             pintarMascota();
             cerrarModal();
         }
