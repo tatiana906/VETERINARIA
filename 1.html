@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            
+        }
+
+        h1 {
+            text-align: center;
+            color: #333; 
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .container,
+        .buscar-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            max-width: 600px; 
+            padding: 20px; 
+            background-color: white; 
+        }
+
+
+        .container input,
+        .container select,
+        .buscar-container input,
+        .buscar-container select {
+            margin: 5px;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #495057;
+        }
+
+        .container button,
+        .buscar-container button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: red;
+            color: white;
+            cursor: pointer;
+            margin-left: 5px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .container button:hover,
+        .buscar-container button:hover {
+            background-color: violet;
+            color: black;
+        }
+
+        #Mascota {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px auto; 
+            max-width: 1000px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: white; 
+        }
+
+        .cita-card { 
+            display: inline-block;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgba(73, 228, 73, 0.774);
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 250px;
+            text-align: center;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+
+        .cita-card:hover {
+            transform: translateY(-5px); 
+        }
+
+        .cita-card p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .cita-card button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px; 
+        }
+
+        .cita-card button:nth-child(1) { 
+            background-color: violet;
+            color: black;
+        }
+
+
+        .cita-card button:nth-child(2) { 
+            background-color: #ff4444;
+            color: white;
+        }
+
+        #Mimodal {
+            display: none;
+            position: fixed; 
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.5); 
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #Mimodal .container { 
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        #registrarCitaBtn {
+            display: block;
+            margin: 20px auto 10px;
+            background-color: #00ff2ad2;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #registrarCitaBtn:hover {
+            background-color: #0056b3;
+        }
+
+        #cerrarModalBtn { 
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        #abrirModalPrincipalBtn {
+            display: block;
+            margin: 20px auto;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #abrirModalPrincipalBtn:hover {
+            background-color: #00b318;
+        }
+
+        #cerrarModalBtn:hover {
+            background-color: #c82333;
+        }
+
+        .input-grande {
+            padding: 14px 16px;
+            font-size: 18px;
+            width: calc(100% - 10px); 
+            box-sizing: border-box; 
+            margin-bottom: 10px; 
+        }
+
+
+        .custom-alert-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-alert-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .custom-alert-box h3 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .custom-alert-box p {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .custom-alert-box button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.2s ease;
+        }
+
+        .custom-alert-box button:hover {
+            background-color: #0056b3;
+        }
+
+        
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>Gestor de Citas Veterinarias</h1>
+    </div>
+
+    <button id="abrirModalPrincipalBtn">Agendar Nueva Cita</button>
+
+    <div class="buscar-container">
+        <input type="text" id="buscarMascota" placeholder="Buscar por nombre Mascota o Propietario">
+        <select id="buscarEstado">
+            <option value="">Filtrar por estado</option>
+            <option value="Abierta">Abierta</option>
+            <option value="Terminada">Terminada</option>
+            <option value="Ocupada">Ocupada</option>
+        </select>
+    </div>
+
+    <div id="Mimodal" style="display: none;">
+        <div class="container">
+            <button id="cerrarModalBtn">✖️</button>
+            <h2>Agendar/Editar Cita</h2>
+            <input type="text" id="Mascota" placeholder="Nombre Mascota" class="input-grande">
+            <input type="text" id="Propietario" placeholder="Propietario" class="input-grande">
+            <input type="text" id="Telefono" placeholder="Telefono" class="input-grande">
+            <input type="date" id="fechaCita" placeholder="Fecha Cita" class="input-grande">
+            <input type="time" id="horaCita" placeholder="Hora Cita" class="input-grande">
+            
+            <select id="animalselect" class="input-grande">
+                <option value="">Tipo de Mascota</option>
+                <option value="Perro">Perro</option>
+                <option value="Gato">Gato</option>
+                <option value="Hamster">Hamster</option>
+                <option value="Tortuga">Tortuga</option>
+                <option value="Loro">Loro</option>
+                <option value="Pez">Pez</option>
+                <option value="Vaca">Vaca</option>
+                <option value="Caballo">Caballo</option>
+                <option value="Pinguino">Pinguino</option>
+                <option value="Serpiente">Serpiente</option>
+            </select>
+           
+            <textarea id="sintomas" placeholder="Síntomas" class="input-grande" maxlength="400"></textarea>
+            <small id="charCount">0/400 caracteres</small>
+            <select id="estado" class="input-grande">
+                <option value="">Estado</option>
+                <option value="Abierta">Abierta</option>
+                <option value="Terminada">Terminada</option>
+                <option value="Ocupada">Ocupada</option>
+            </select>
+            <button id="registrarCitaBtn">Agendar Cita</button>
+        </div>
+    </div>
+
+    <div id="customAlertOverlay" class="custom-alert-overlay">
+        <div class="custom-alert-box">
+            <h3 id="customAlertTitle"></h3>
+            <p id="customAlertMessage"></p>
+            <button id="customAlertButton">Aceptar</button>
+        </div>
+    </div>
+
+    <div id="listaMascotas"></div>
+
+    <script>
+        let datosMascota = [];
+        let modo = 0;
+        let numMascotaEditando = null;
+        let contadorId = 1; 
+        
+       
+        function guardarMascota() {
+            const nombreMascota = document.getElementById("Mascota").value.trim();
+            const propietario = document.getElementById("Propietario").value.trim();
+            const telefono = document.getElementById("Telefono").value.trim();
+            const fechaCita = document.getElementById("fechaCita").value.trim();
+            const horaCita = document.getElementById("horaCita").value.trim();
+            const animalselect = document.getElementById("animalselect").value;
+            const sintomas = document.getElementById("sintomas").value.trim();
+            const estado = document.getElementById("estado").value;
+
+            if (!nombreMascota || !propietario || !telefono || !fechaCita || !horaCita || !animalselect || !sintomas || !estado) {
+                showAlert("Campos Incompletos", "Por favor complete todos los campos.");
+                return;
+            }
+
+            if (!/^\d+$/.test(telefono)) {
+            showAlert("Teléfono Inválido", "El número de teléfono debe contener solo dígitos.");
+            return;
+            }
+
+            const fechaHoy = new Date();
+            const fechaIngresada = new Date(fechaCita);
+            fechaHoy.setHours(0, 0, 0, 0);
+
+             if (fechaIngresada <= fechaHoy) {
+            showAlert("Fecha Inválida", "La fecha de la cita debe ser posterior a la fecha actual.");
+            return;
+         }
+
+            const [hora, minutos] = horaCita.split(":").map(Number);
+            if (hora < 8 || hora > 20 || (hora === 20 && minutos > 0)) {
+                showAlert("Hora Inválida", "El horario de atención es de 8:00 a.m. a 8:00 p.m.");
+                return;
+            }
+
+            const existeCita = datosMascota.some(item => 
+                item.fechaCita === fechaCita && 
+                item.horaCita === horaCita
+            );
+
+            if (existeCita) {
+                showAlert("Horario No Disponible", "Ya existe una cita agendada para esta fecha y hora. Por favor, seleccione otro horario.");
+                return;
+            }
+
+            let mascota = {
+                id: contadorId++, 
+                Mascota: nombreMascota,
+                Propietario: propietario,
+                Telefono: telefono,
+                fechaCita: fechaCita,
+                horaCita: horaCita,
+                animalselect: animalselect,
+                sintomas: sintomas,
+                estado: estado
+            };
+
+            datosMascota.unshift(mascota);
+            datosMascota.sort((a, b) => a.id - b.id);
+            showAlert("Registro Exitoso", "¡La Cita se agendó correctamente!");
+            limpiar();
+            pintarMascota();
+            cerrarModal();
+        }
+
+        function limpiar() {
+            document.getElementById("Mascota").value = "";
+            document.getElementById("Propietario").value = "";
+            document.getElementById("Telefono").value = "";
+            document.getElementById("fechaCita").value = "";
+            document.getElementById("horaCita").value = "";
+            document.getElementById("animalselect").value = "";
+            document.getElementById("sintomas").value = "";
+            document.getElementById("estado").value = "Abierta";
+        }
+
+        function editarMascota() {
+            const nombreMascota = document.getElementById("Mascota").value.trim();
+            const propietario = document.getElementById("Propietario").value.trim();
+            const telefono = document.getElementById("Telefono").value.trim();
+            const fechaCita = document.getElementById("fechaCita").value.trim();
+            const horaCita = document.getElementById("horaCita").value.trim();
+            const animalselect = document.getElementById("animalselect").value;
+            const sintomas = document.getElementById("sintomas").value.trim();
+            const estado = document.getElementById("estado").value;
+
+            if (!nombreMascota || !propietario || !telefono || !fechaCita || !horaCita || !animalselect || !sintomas || !estado) {
+                showAlert("Campos Incompletos", "Por favor complete todos los campos.");
+                return;
+            }
+
+            const existeOtroConMismoNombre = datosMascota.some(item =>
+                item.Mascota.toLowerCase() === nombreMascota.toLowerCase() && item.Mascota !== numMascotaEditando
+            );
+
+            if (existeOtroConMismoNombre) {
+                showAlert("Error de Edición", "Ya existe otra cita con este nombre de mascota. Por favor, use un nombre diferente.");
+                return;
+            }
+
+            let indice = datosMascota.findIndex(it => it.Mascota === numMascotaEditando); 
+            if (indice !== -1) {
+                datosMascota[indice].Mascota = nombreMascota; 
+                datosMascota[indice].Propietario = propietario;
+                datosMascota[indice].Telefono = telefono;
+                datosMascota[indice].fechaCita = fechaCita;
+                datosMascota[indice].horaCita = horaCita;
+                datosMascota[indice].animalselect = animalselect;
+                datosMascota[indice].sintomas = sintomas;
+                datosMascota[indice].estado = estado;
+            }
+
+            pintarMascota();
+            modo = 0;
+            document.getElementById("registrarCitaBtn").textContent = "Agendar Cita"; 
+            numMascotaEditando = null; 
+            limpiar();
+            cerrarModal();
+            showAlert("Edición Exitosa", "¡La cita ha sido actualizada correctamente!");
+        }
+
+
+        function pintarMascota(lista = datosMascota) {
+            const contenedor = document.getElementById("listaMascotas");
+            contenedor.textContent = "";
+
+            if (lista.length === 0) {
+                contenedor.innerHTML = '<p style="text-align: center; color: #666;">No hay citas para mostrar.</p>';
+                return;
+            }
+
+            lista.forEach(item => {
+                let divCard = document.createElement("div");
+                divCard.classList.add("cita-card");
+
+                let img = document.createElement("img");
+               
+                img.src = `img/${item.animalselect}.jpeg`;
+                img.alt = item.animalselect;
+                img.style.width = "150px";
+                img.style.height = "150px";
+                img.style.objectFit = "contain"; 
+                img.style.marginBottom = "15px";
+                img.style.borderRadius = "10px";
+                
+
+                divCard.appendChild(img);
+
+                let divTextos = document.createElement("div");
+                divTextos.innerHTML = `
+                    <p><strong>ID Cita:</strong> ${item.id}</p>
+                    <p><strong>Mascota:</strong> ${item.Mascota}</p>
+                    <p><strong>Propietario:</strong> ${item.Propietario}</p>
+                    <p><strong>Teléfono:</strong> ${item.Telefono}</p>
+                    <p><strong>Fecha Cita:</strong> ${item.fechaCita}</p>
+                    <p><strong>Hora Cita:</strong> ${item.horaCita}</p>
+                    <p><strong>Tipo:</strong> ${item.animalselect}</p>
+                    <p><strong>Síntomas:</strong> ${item.sintomas}</p>
+                    <p><strong>Estado:</strong> ${item.estado}</p>`;
+                divCard.appendChild(divTextos);
+
+                let divBotones = document.createElement("div");
+
+                let editar = document.createElement("button");
+                editar.textContent = "📝";
+                editar.addEventListener("click", () => {
+                    document.getElementById("Mascota").value = item.Mascota;
+                    document.getElementById("Propietario").value = item.Propietario;
+                    document.getElementById("Telefono").value = item.Telefono;
+                    document.getElementById("fechaCita").value = item.fechaCita;
+                    document.getElementById("horaCita").value = item.horaCita;
+                    document.getElementById("animalselect").value = item.animalselect;
+                    document.getElementById("sintomas").value = item.sintomas;
+                    document.getElementById("estado").value = item.estado;
+                    document.getElementById("registrarCitaBtn").textContent = "Guardar Cambios"; 
+                    modo = 1; 
+                    numMascotaEditando = item.Mascota; 
+                    abrirModal();
+                });
+
+                let eliminar = document.createElement("button");
+                eliminar.textContent = "❌";
+                eliminar.addEventListener("click", () => {
+                    if (confirm(`¿Estás seguro de que quieres eliminar la cita de ${item.Mascota}?`)) {
+                        let indice = datosMascota.findIndex(it => it.Mascota === item.Mascota);
+                        if (indice !== -1) {
+                            datosMascota.splice(indice, 1);
+                            pintarMascota();
+                            showAlert("Cita Eliminada", "La Cita ha sido eliminada correctamente.");
+                        }
+                    }
+                });
+
+                divBotones.appendChild(editar);
+                divBotones.appendChild(eliminar);
+                divCard.appendChild(divBotones);
+
+                contenedor.appendChild(divCard);
+            });
+        }
+
+        function actualizarBusqueda() {
+            let terminoBusqueda = document.getElementById("buscarMascota").value.trim().toLowerCase();
+            let estadoFiltro = document.getElementById("buscarEstado").value;
+
+            let filtradas = datosMascota.filter(item => {
+                const coincideNombre = item.Mascota.toLowerCase().includes(terminoBusqueda) || item.Propietario.toLowerCase().includes(terminoBusqueda);
+                const coincideEstado = (estadoFiltro === "" || item.estado === estadoFiltro);
+                return coincideNombre && coincideEstado;
+            });
+
+            if (filtradas.length === 0 && (terminoBusqueda !== "" || estadoFiltro !== "")) {
+                showAlert("Sin Resultados", "No se encontraron resultados para la búsqueda.");
+            }
+
+            pintarMascota(filtradas);
+        }
+
+        
+        function showAlert(title, message) {
+            document.getElementById("customAlertTitle").textContent = title;
+            document.getElementById("customAlertMessage").textContent = message;
+            document.getElementById("customAlertOverlay").style.display = "flex";
+        }
+        
+    
+        function abrirModal() {
+            document.getElementById("Mimodal").style.display = "flex";
+        }
+        
+        function cerrarModal() {
+            document.getElementById("Mimodal").style.display = "none";
+            limpiar();
+            numMascotaEditando = null;
+        }
+        
+       
+
+            document.getElementById("customAlertButton").addEventListener("click", () => {
+                document.getElementById("customAlertOverlay").style.display = "none";
+            });
+        
+            document.getElementById("registrarCitaBtn").addEventListener("click", () => {
+                if (modo === 0) {
+                    guardarMascota();
+                } else {
+                    editarMascota();
+                }
+            });
+        
+            document.getElementById("cerrarModalBtn").addEventListener("click", () => {
+                cerrarModal();
+            });
+        
+            document.getElementById("abrirModalPrincipalBtn").addEventListener("click", () => {
+                modo = 0;
+                document.getElementById("registrarCitaBtn").textContent = "Agendar Cita";
+                limpiar();
+                abrirModal();
+            });
+        
+          
+            document.getElementById("buscarMascota").addEventListener("input", actualizarBusqueda);
+            document.getElementById("buscarEstado").addEventListener("change", actualizarBusqueda);
+
+            
+            pintarMascota();
+ </script>
+</body>
+
+</html>
