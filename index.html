@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <title>Citas</title>
     <style>
         body {
@@ -141,7 +143,7 @@
             justify-content: center;
             align-items: center;
             overflow-y: auto;
-            z-index: 1000; /* Ensure modal is above other content */
+            z-index: 1000; 
         }
 
         #Mimodal .container {
@@ -149,7 +151,7 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            position: relative; /* Enable scrolling within modal if content is long */
+            position: relative; 
         }
 
         #registrarCitaBtn {
@@ -385,7 +387,7 @@
             localStorage.setItem('citasVeterinaria', JSON.stringify(datosMascota));
         }
 
-        function showAlert(title, message) {
+        function showAlert(title, message, confirm) {
             document.getElementById("customAlertTitle").textContent = title;
             document.getElementById("customAlertMessage").textContent = message;
             document.getElementById("customAlertOverlay").style.display = "flex";
@@ -616,15 +618,29 @@
                 let eliminar = document.createElement("button");
                 eliminar.textContent = "❌";
                 eliminar.addEventListener("click", () => {
-                    if (confirm(`¿Estás seguro de que quieres eliminar la cita de ${item.Mascota}?`)) {
-                        let indice = datosMascota.findIndex(it => it.id === item.id); // Find by ID
-                        if (indice !== -1) {
-                            datosMascota.splice(indice, 1);
-                            guardarEnLocalStorage();
-                            pintarMascota();
-                            showAlert("Cita Eliminada", "La Cita ha sido eliminada correctamente.");
+                    Swal.fire({
+                        title: '¿Eliminar cita?',
+                        html: `<p>¿Estás seguro de que quieres eliminar la cita de <strong>${item.Mascota}</strong>?</p>`,
+                        showCancelButton: true,
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'No, cancelar',
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            let indice = datosMascota.findIndex(it => it.id === item.id); 
+                            if (indice !== -1) {
+                                datosMascota.splice(indice, 1);
+                                datosMascota.forEach((cita, index) => {
+                                cita.id = index + 1;
+                                });
+                                guardarEnLocalStorage();
+                                pintarMascota();
+                                showAlert("Cita Eliminada", "La Cita ha sido eliminada correctamente.");
+                            }
                         }
-                    }
+                    });
                 });
 
                 divBotones.appendChild(editar);
